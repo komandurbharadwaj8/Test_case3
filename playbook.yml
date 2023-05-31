@@ -1,0 +1,27 @@
+---
+- name: Deploy NGINX container using Docker
+  hosts: local
+  become: true
+
+  tasks:
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+
+    - name: Build NGINX Docker image
+      docker_image:
+        name: my-nginx-image
+        build:
+          path: /home/user/nginxserver/Dockerfile
+          pull: yes
+
+    - name: Run NGINX container
+      docker_container:
+        name: my-nginx-container
+        image: my-nginx-image
+        ports:
+          - "83:83"
+        volumes:
+          - "/home/user/firstcase-2/sampl.html:/usr/share/nginx/html"
+        state: started
